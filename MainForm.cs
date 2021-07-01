@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibVLCSharp.Shared;
 using System.IO;
+using System.Threading;
 
 namespace AnimatedWallpaper
 {
@@ -20,10 +21,14 @@ namespace AnimatedWallpaper
         }
 
         private StreamReader currentReader = null;
-        private MediaPlayer currentMediaPlayer = null;
+        private Media currentMedia = null;
+
+        private MediaPlayer mediaPlayer;
+        private LibVLC libVLC;
 
         private void Main_Load(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("Hi");
             Location = Screen.PrimaryScreen.Bounds.Location;
             Size = Screen.PrimaryScreen.Bounds.Size;
             video.Location = Location;
@@ -37,6 +42,19 @@ namespace AnimatedWallpaper
 
             Core.Initialize();
 
+            libVLC = new();
+            mediaPlayer = new MediaPlayer(libVLC)
+            {
+                Mute = true
+            };
+
+            mediaPlayer.EndReached += (sender, args) => ThreadPool.QueueUserWorkItem(_ => {
+                mediaPlayer.Play(currentMedia);
+            });
+
+
+            video.MediaPlayer = mediaPlayer;
+
             if (!File.Exists("video.mp4"))
                 return;
 
@@ -48,16 +66,9 @@ namespace AnimatedWallpaper
             DisposeVideo();
 
             currentReader = new("video.mp4");
-            LibVLC libVLC = new("--input-repeat=2");
+            currentMedia = new Media(libVLC, new StreamMediaInput(currentReader.BaseStream));
 
-            currentMediaPlayer = new MediaPlayer(new Media(libVLC, new StreamMediaInput(currentReader.BaseStream)))
-            {
-                Mute = true
-            };
-
-            video.MediaPlayer = currentMediaPlayer;
-
-            video.MediaPlayer.Play();
+            mediaPlayer.Play(currentMedia);
         }
 
         void MenuSettings_Click(object sender, EventArgs e)
@@ -73,17 +84,23 @@ namespace AnimatedWallpaper
 
         public void DisposeVideo()
         {
+            System.Diagnostics.Debug.WriteLine("Disposing");
             if (currentReader is not null)
             {
                 currentReader.Dispose();
                 currentReader = null;
             }
 
-            if (currentMediaPlayer is not null)
+            if (currentMedia is not null)
             {
-                currentMediaPlayer.Media.Dispose();
-                currentMediaPlayer.Dispose();
-                currentMediaPlayer = null;
+                if(mediaPlayer.IsPlaying)
+                {
+                    mediaPlayer.Stop();
+                    mediaPlayer.Media = null;
+                }
+
+                currentMedia.Dispose();
+                currentMedia = null;
             }
         }
     }
