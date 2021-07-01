@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "vi1ZIVxEwLcgQrT4RgZKNTUozLgBb1wCYz4ldfVZNVFN+qZVW5tg8Obpy9Yv+K8fYG4YeirUdegv12BiQeEFyg==",
+  "dgSpecHash": "5PTE16/SzDAT/v4lwc00IbQ4T4FtjjWVxV6rVOJEDcnujz2QRBDRcfe2XePJ9AZmOQkn6kJwF49UhU2A0Wjd5A==",
   "success": true,
   "projectFilePath": "C:\\Users\\hamza\\source\\repos\\AnimatedWallpaper\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\hamza\\.nuget\\packages\\libvlcsharp\\3.5.1\\libvlcsharp.3.5.1.nupkg.sha512",
+    "C:\\Users\\hamza\\.nuget\\packages\\libvlcsharp.winforms\\3.5.1\\libvlcsharp.winforms.3.5.1.nupkg.sha512",
+    "C:\\Users\\hamza\\.nuget\\packages\\videolan.libvlc.windows\\3.0.14\\videolan.libvlc.windows.3.0.14.nupkg.sha512"
+  ],
   "logs": []
 }

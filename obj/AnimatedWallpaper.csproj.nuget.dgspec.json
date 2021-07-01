@@ -39,6 +39,20 @@
       "frameworks": {
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
+          "dependencies": {
+            "LibVLCSharp": {
+              "target": "Package",
+              "version": "[3.5.1, )"
+            },
+            "LibVLCSharp.WinForms": {
+              "target": "Package",
+              "version": "[3.5.1, )"
+            },
+            "VideoLAN.LibVLC.Windows": {
+              "target": "Package",
+              "version": "[3.0.14, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

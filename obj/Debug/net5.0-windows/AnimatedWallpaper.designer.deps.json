@@ -5,7 +5,50 @@
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v5.0": {}
+    ".NETCoreApp,Version=v5.0": {
+      "LibVLCSharp/3.5.1": {
+        "runtime": {
+          "lib/netstandard2.1/LibVLCSharp.dll": {
+            "assemblyVersion": "3.5.1.0",
+            "fileVersion": "3.5.1.0"
+          }
+        }
+      },
+      "LibVLCSharp.WinForms/3.5.1": {
+        "dependencies": {
+          "LibVLCSharp": "3.5.1"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/LibVLCSharp.WinForms.dll": {
+            "assemblyVersion": "3.5.1.0",
+            "fileVersion": "3.5.1.0"
+          }
+        }
+      },
+      "VideoLAN.LibVLC.Windows/3.0.14": {}
+    }
   },
-  "libraries": {}
+  "libraries": {
+    "LibVLCSharp/3.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GaWgMcfYJt5aA2GPRmQdZIsl8EicCsinT/YVJN35VDv8F+PoQVBHHKt5wXs6EFwxEEASbj/No+eJN5iKS+/6qA==",
+      "path": "libvlcsharp/3.5.1",
+      "hashPath": "libvlcsharp.3.5.1.nupkg.sha512"
+    },
+    "LibVLCSharp.WinForms/3.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j1KT2VLBUV0LPPpPXjA1v9KurovZc6MKVUF+KNVGkolSq6Sepy2KhOjIfFXIWobPOLykhutBvPpd8Y/FqEhHog==",
+      "path": "libvlcsharp.winforms/3.5.1",
+      "hashPath": "libvlcsharp.winforms.3.5.1.nupkg.sha512"
+    },
+    "VideoLAN.LibVLC.Windows/3.0.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pzxDrNltbc4iojsQiyt/8hpG0i1RybQyiM96cVPoPlIdgr/98AkRY8/yae3ndN2Fh2BeGwedyTVhXjTuv4UX3g==",
+      "path": "videolan.libvlc.windows/3.0.14",
+      "hashPath": "videolan.libvlc.windows.3.0.14.nupkg.sha512"
+    }
+  }
 }
