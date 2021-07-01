@@ -22,8 +22,6 @@ namespace AnimatedWallpaper
         private StreamReader currentReader = null;
         private MediaPlayer currentMediaPlayer = null;
 
-        private LibVLC libVLC;
-
         private void Main_Load(object sender, EventArgs e)
         {
             Location = Screen.PrimaryScreen.Bounds.Location;
@@ -39,8 +37,6 @@ namespace AnimatedWallpaper
 
             Core.Initialize();
 
-            libVLC = new("--input-repeat=2");
-
             if (!File.Exists("video.mp4"))
                 return;
 
@@ -52,9 +48,12 @@ namespace AnimatedWallpaper
             DisposeVideo();
 
             currentReader = new("video.mp4");
+            LibVLC libVLC = new("--input-repeat=2");
 
-
-            currentMediaPlayer = new MediaPlayer(new Media(libVLC, new StreamMediaInput(currentReader.BaseStream)));
+            currentMediaPlayer = new MediaPlayer(new Media(libVLC, new StreamMediaInput(currentReader.BaseStream)))
+            {
+                Mute = true
+            };
 
             video.MediaPlayer = currentMediaPlayer;
 
@@ -63,7 +62,7 @@ namespace AnimatedWallpaper
 
         void MenuSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settings = new SettingsForm(this);
+            SettingsForm settings = new(this);
             settings.Show();
         }
 
@@ -74,13 +73,17 @@ namespace AnimatedWallpaper
 
         public void DisposeVideo()
         {
-            if (currentReader != null)
+            if (currentReader is not null)
+            {
                 currentReader.Dispose();
+                currentReader = null;
+            }
 
-            if (currentMediaPlayer != null)
+            if (currentMediaPlayer is not null)
             {
                 currentMediaPlayer.Media.Dispose();
                 currentMediaPlayer.Dispose();
+                currentMediaPlayer = null;
             }
         }
     }

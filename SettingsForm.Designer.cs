@@ -34,14 +34,15 @@ namespace AnimatedWallpaper
             this.videoFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.urlText = new System.Windows.Forms.TextBox();
             this.selectBtn = new System.Windows.Forms.Button();
+            this.startup_chk = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // saveBtn
             // 
             this.saveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveBtn.Location = new System.Drawing.Point(418, 471);
+            this.saveBtn.Location = new System.Drawing.Point(12, 160);
             this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(94, 29);
+            this.saveBtn.Size = new System.Drawing.Size(500, 29);
             this.saveBtn.TabIndex = 0;
             this.saveBtn.Text = "Save";
             this.saveBtn.UseVisualStyleBackColor = true;
@@ -80,15 +81,27 @@ namespace AnimatedWallpaper
             this.selectBtn.UseVisualStyleBackColor = true;
             this.selectBtn.Click += new System.EventHandler(this.selectBtn_Click);
             // 
+            // startup_chk
+            // 
+            this.startup_chk.AutoSize = true;
+            this.startup_chk.Location = new System.Drawing.Point(12, 79);
+            this.startup_chk.Name = "startup_chk";
+            this.startup_chk.Size = new System.Drawing.Size(123, 24);
+            this.startup_chk.TabIndex = 4;
+            this.startup_chk.Text = "Run at startup";
+            this.startup_chk.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 512);
+            this.ClientSize = new System.Drawing.Size(524, 201);
+            this.Controls.Add(this.startup_chk);
             this.Controls.Add(this.selectBtn);
             this.Controls.Add(this.urlText);
             this.Controls.Add(this.urlLabel);
             this.Controls.Add(this.saveBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "SettingsForm";
             this.Text = "Settings";
             this.ResumeLayout(false);
@@ -103,5 +116,6 @@ namespace AnimatedWallpaper
         private System.Windows.Forms.OpenFileDialog videoFileDialog;
         private System.Windows.Forms.TextBox urlText;
         private System.Windows.Forms.Button selectBtn;
+        private System.Windows.Forms.CheckBox startup_chk;
     }
 }
