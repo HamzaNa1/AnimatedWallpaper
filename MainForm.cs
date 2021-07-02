@@ -28,7 +28,6 @@ namespace AnimatedWallpaper
 
         private void Main_Load(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Hi");
             Location = Screen.PrimaryScreen.Bounds.Location;
             Size = Screen.PrimaryScreen.Bounds.Size;
             video.Location = Location;
@@ -40,9 +39,14 @@ namespace AnimatedWallpaper
 
             notifyIcon.ContextMenuStrip = menu;
 
+            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+            timer.Interval = 200;
+            timer.Tick += CheckFullscreen;
+            timer.Start();
+
             Core.Initialize();
 
-            libVLC = new();
+            libVLC = new("--no-audio");
             mediaPlayer = new MediaPlayer(libVLC)
             {
                 Mute = true
@@ -52,13 +56,26 @@ namespace AnimatedWallpaper
                 mediaPlayer.Play(currentMedia);
             });
 
-
             video.MediaPlayer = mediaPlayer;
 
             if (!File.Exists(Application.StartupPath + "video.mp4"))
                 return;
 
             LoadVideo();
+        }
+
+        private void CheckFullscreen(object sender, EventArgs e)
+        {
+            if (ScreenUtilities.IsForegroundFullScreen() && mediaPlayer.IsPlaying)
+            {
+                mediaPlayer.Pause();
+                System.Diagnostics.Debug.WriteLine("Paused!");
+            }
+            else if (!ScreenUtilities.IsForegroundFullScreen() && !mediaPlayer.IsPlaying)
+            {
+                mediaPlayer.Play();
+                System.Diagnostics.Debug.WriteLine("Resumed!");
+            }
         }
 
         public void LoadVideo()
@@ -84,7 +101,6 @@ namespace AnimatedWallpaper
 
         public void DisposeVideo()
         {
-            System.Diagnostics.Debug.WriteLine("Disposing");
             if (currentReader is not null)
             {
                 currentReader.Dispose();
