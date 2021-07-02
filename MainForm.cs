@@ -55,7 +55,7 @@ namespace AnimatedWallpaper
 
             video.MediaPlayer = mediaPlayer;
 
-            if (!File.Exists("video.mp4"))
+            if (!File.Exists(Application.StartupPath + "video.mp4"))
                 return;
 
             LoadVideo();
@@ -65,7 +65,7 @@ namespace AnimatedWallpaper
         {
             DisposeVideo();
 
-            currentReader = new("video.mp4");
+            currentReader = new(Application.StartupPath + "video.mp4");
             currentMedia = new Media(libVLC, new StreamMediaInput(currentReader.BaseStream));
 
             mediaPlayer.Play(currentMedia);

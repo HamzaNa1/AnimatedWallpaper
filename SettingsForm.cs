@@ -51,7 +51,7 @@ namespace AnimatedWallpaper
             if (!string.IsNullOrEmpty(urlText.Text))
             {
                 main.DisposeVideo();
-                File.Copy(urlText.Text, "video.mp4", true);
+                File.Copy(urlText.Text, Application.StartupPath + "video.mp4", true);
                 main.LoadVideo();
             }
 

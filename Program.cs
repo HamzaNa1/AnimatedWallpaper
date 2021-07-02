@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace AnimatedWallpaper
 {
+    // Credits to Gerald Degeneve
+    // https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
+
     static class Program
     {
         /// <summary>
