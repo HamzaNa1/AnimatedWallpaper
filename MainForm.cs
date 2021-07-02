@@ -109,6 +109,8 @@ namespace AnimatedWallpaper
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Automation.RemoveAllEventHandlers();
+
             DisposeVideo();
         }
 
