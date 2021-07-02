@@ -33,6 +33,7 @@ namespace AnimatedWallpaper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.video = new LibVLCSharp.WinForms.VideoView();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.video)).BeginInit();
             this.SuspendLayout();
             // 
@@ -75,6 +76,7 @@ namespace AnimatedWallpaper
 
         private LibVLCSharp.WinForms.VideoView video;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

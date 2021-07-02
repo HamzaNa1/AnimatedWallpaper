@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibVLCSharp.Shared;
 using System.IO;
-using System.Threading;
+using System.Windows.Automation;
 
 namespace AnimatedWallpaper
 {
@@ -39,23 +32,21 @@ namespace AnimatedWallpaper
 
             notifyIcon.ContextMenuStrip = menu;
 
-            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-            timer.Interval = 200;
-            timer.Tick += CheckFullscreen;
+            Timer timer = new()
+            {
+                Interval = 10000,
+            };
+
+            timer.Tick += Tick;
             timer.Start();
+
+            Automation.AddAutomationFocusChangedEventHandler(OnFocusChangedHandler);
 
             Core.Initialize();
 
-            libVLC = new("--no-audio");
-            mediaPlayer = new MediaPlayer(libVLC)
-            {
-                Mute = true
-            };
-
-            mediaPlayer.EndReached += (sender, args) => ThreadPool.QueueUserWorkItem(_ => {
-                mediaPlayer.Play(currentMedia);
-            });
-
+            libVLC = new("--no-audio", "--input-repeat=65545");
+            mediaPlayer = new MediaPlayer(libVLC);
+         
             video.MediaPlayer = mediaPlayer;
 
             if (!File.Exists(Application.StartupPath + "video.mp4"))
@@ -64,17 +55,39 @@ namespace AnimatedWallpaper
             LoadVideo();
         }
 
-        private void CheckFullscreen(object sender, EventArgs e)
+        private void Tick(object sender, EventArgs e)
         {
-            if (ScreenUtilities.IsForegroundFullScreen() && mediaPlayer.IsPlaying)
+            CheckFullscreen();
+        }
+
+        private void OnFocusChangedHandler(object sender, AutomationFocusChangedEventArgs e)
+        {
+            CheckFullscreen();
+        }
+
+        private void CheckFullscreen()
+        {
+            try
             {
-                mediaPlayer.Pause();
-                System.Diagnostics.Debug.WriteLine("Paused!");
+                if (mediaPlayer is null)
+                    return;
+
+                bool fullscreen = ScreenUtilities.IsForegroundFullScreen();
+
+                if (fullscreen && mediaPlayer.IsPlaying)
+                {
+                    mediaPlayer.Pause();
+                    System.Diagnostics.Debug.WriteLine("Paused!");
+                }
+                else if (!fullscreen && !mediaPlayer.IsPlaying)
+                {
+                    mediaPlayer.Play();
+                    System.Diagnostics.Debug.WriteLine("Resumed!");
+                }
             }
-            else if (!ScreenUtilities.IsForegroundFullScreen() && !mediaPlayer.IsPlaying)
+            catch (Exception e)
             {
-                mediaPlayer.Play();
-                System.Diagnostics.Debug.WriteLine("Resumed!");
+                System.Diagnostics.Debug.WriteLine(e);
             }
         }
 

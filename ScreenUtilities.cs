@@ -39,7 +39,6 @@ namespace AnimatedWallpaper
             return IsForegroundFullScreen(null);
         }
 
-
         public static bool IsForegroundFullScreen(Screen screen)
         {
             if (screen == null)
