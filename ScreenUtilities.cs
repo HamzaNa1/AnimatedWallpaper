@@ -56,7 +56,7 @@ namespace AnimatedWallpaper
             if (IgnoreList.Contains(proc.ProcessName))
                 return false;
 
-            return screen.Bounds.Width == (rect.right - rect.left) && screen.Bounds.Height == (rect.bottom - rect.top);
+            return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top).Contains(screen.WorkingArea);
         }
     }
 }

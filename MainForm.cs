@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using LibVLCSharp.Shared;
 using System.IO;
-using System.Windows.Automation;
+using System.Threading;
 
 namespace AnimatedWallpaper
 {
@@ -11,15 +11,14 @@ namespace AnimatedWallpaper
         public MainForm()
         {
             InitializeComponent();
+            MediaHandler.Initialize();
         }
 
-        private StreamReader currentReader = null;
-        private Media currentMedia = null;
-
         private MediaPlayer mediaPlayer;
-        private LibVLC libVLC;
 
-        private void Main_Load(object sender, EventArgs e)
+        private SettingsForm settings;
+
+        private void MainForm_Load(object sender, EventArgs e)
         {
             Location = Screen.PrimaryScreen.Bounds.Location;
             Size = Screen.PrimaryScreen.Bounds.Size;
@@ -28,39 +27,42 @@ namespace AnimatedWallpaper
 
             var menu = new ContextMenuStrip();
             menu.Items.Add("Settings", null, MenuSettings_Click);
-            menu.Items.Add("Exit", null, (_, _) => Application.Exit());
+            menu.Items.Add("Exit", null, (_, _) =>
+            {
+                Dispose();
+                Application.Exit();
+            });
 
             notifyIcon.ContextMenuStrip = menu;
 
-            Timer timer = new()
+            System.Windows.Forms.Timer timer = new()
             {
-                Interval = 10000,
+                Interval = 300,
             };
 
             timer.Tick += Tick;
             timer.Start();
 
-            Automation.AddAutomationFocusChangedEventHandler(OnFocusChangedHandler);
+            mediaPlayer = new MediaPlayer(MediaHandler.libVLC);
 
-            Core.Initialize();
+            mediaPlayer.EndReached += (_, _) => ThreadPool.QueueUserWorkItem((_) =>
+            {
+                PlayNext();
+            });
 
-            libVLC = new("--no-audio", "--input-repeat=65545");
-            mediaPlayer = new MediaPlayer(libVLC);
-         
             video.MediaPlayer = mediaPlayer;
 
-            if (!File.Exists(Application.StartupPath + "video.mp4"))
-                return;
+            Restart();
 
-            LoadVideo();
+            OpenSettings();
+        }
+
+        private void PlayNext()
+        {
+            mediaPlayer.Play(MediaHandler.GetNextMedia());
         }
 
         private void Tick(object sender, EventArgs e)
-        {
-            CheckFullscreen();
-        }
-
-        private void OnFocusChangedHandler(object sender, AutomationFocusChangedEventArgs e)
         {
             CheckFullscreen();
         }
@@ -91,48 +93,33 @@ namespace AnimatedWallpaper
             }
         }
 
-        public void LoadVideo()
+        public void Restart()
         {
-            DisposeVideo();
-
-            currentReader = new(Application.StartupPath + "video.mp4");
-            currentMedia = new Media(libVLC, new StreamMediaInput(currentReader.BaseStream));
-
-            mediaPlayer.Play(currentMedia);
+            mediaPlayer.Play(MediaHandler.GetCurrentMedia());
         }
 
         void MenuSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settings = new(this);
+            OpenSettings();
+        }
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void OpenSettings()
+        {
+            if (settings is not null && !settings.IsDisposed)
+                return;
+
+            settings = new(this);
             settings.Show();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Automation.RemoveAllEventHandlers();
-
-            DisposeVideo();
-        }
-
-        public void DisposeVideo()
-        {
-            if (currentReader is not null)
-            {
-                currentReader.Dispose();
-                currentReader = null;
-            }
-
-            if (currentMedia is not null)
-            {
-                if(mediaPlayer.IsPlaying)
-                {
-                    mediaPlayer.Stop();
-                    mediaPlayer.Media = null;
-                }
-
-                currentMedia.Dispose();
-                currentMedia = null;
-            }
+            Dispose();
         }
     }
 }

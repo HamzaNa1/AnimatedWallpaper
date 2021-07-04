@@ -33,7 +33,6 @@ namespace AnimatedWallpaper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.video = new LibVLCSharp.WinForms.VideoView();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.video)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,6 +42,7 @@ namespace AnimatedWallpaper
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.video.BackColor = System.Drawing.Color.Black;
+            this.video.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.video.Location = new System.Drawing.Point(40, 40);
             this.video.MediaPlayer = null;
             this.video.Name = "video";
@@ -55,6 +55,7 @@ namespace AnimatedWallpaper
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Animated Wallpaper";
             this.notifyIcon.Visible = true;
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
             // MainForm
             // 
@@ -66,7 +67,7 @@ namespace AnimatedWallpaper
             this.Name = "MainForm";
             this.Text = "Animated Wallpaper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.Load += new System.EventHandler(this.Main_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.video)).EndInit();
             this.ResumeLayout(false);
 
@@ -76,7 +77,6 @@ namespace AnimatedWallpaper
 
         private LibVLCSharp.WinForms.VideoView video;
         private System.Windows.Forms.NotifyIcon notifyIcon;
-        private System.Windows.Forms.Timer timer1;
     }
 }
 
