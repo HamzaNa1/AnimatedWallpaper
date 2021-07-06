@@ -1,10 +1,7 @@
 ﻿using LibVLCSharp.Shared;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AnimatedWallpaper
@@ -20,6 +17,8 @@ namespace AnimatedWallpaper
         public static readonly List<MyMedia> inactiveMedia = new();
 
         public static int CurrentIndex { get; set; }
+
+        private static Logger logger = Logger.Instance;
 
         public static void Initialize()
         {
@@ -53,16 +52,21 @@ namespace AnimatedWallpaper
             }
             catch (IOException e)
             {
+                logger.Log(LogType.Error, e.ToString());
                 return false;
             }
 
+            logger.Log(LogType.Normal, "Saved!");
             return true;
         }
 
         public static bool Load()
         {
             if (!File.Exists(DataPath))
+            {
+                logger.Log(LogType.Error, $"Failed to load ({DataPath} does not exist)");
                 return false;
+            }
 
             string[] data = File.ReadAllLines(DataPath);
 
@@ -74,9 +78,12 @@ namespace AnimatedWallpaper
                 var isActive = split[1] == "active";
 
                 if (!File.Exists(VideosDirectory + name + ".mp4"))
+                {
+                    logger.Log(LogType.Warning, $"Could not find {name}, Skipping to the next media");
                     continue;
+                }
 
-                StreamReader reader = new(VideosDirectory + name + ".mp4");
+                    StreamReader reader = new(VideosDirectory + name + ".mp4");
                 MyMedia media = new(libVLC, new StreamMediaInput(reader.BaseStream))
                 {
                     Name = name,
@@ -89,6 +96,7 @@ namespace AnimatedWallpaper
                     inactiveMedia.Add(media);
             }
 
+            logger.Log(LogType.Normal, $"Loaded!");
             return true;
         }
 
@@ -113,10 +121,16 @@ namespace AnimatedWallpaper
                 Directory.CreateDirectory(VideosDirectory);
 
             if (!File.Exists(url))
+            {
+                Logger.Instance.Log(LogType.Error, $"Failed to add {name}, Because {url} does not exist.");
                 return false;
+            }
 
             if (Exists(name))
+            {
+                Logger.Instance.Log(LogType.Error, $"Failed to add {name}, Because it already exist.");
                 return false;
+            }
 
             File.Copy(url, VideosDirectory + name + ".mp4", true);
 
@@ -131,6 +145,7 @@ namespace AnimatedWallpaper
 
             Save();
 
+            logger.Log(LogType.Normal, $"Added media ({name}) successfully!");
             return true;
         }
 
@@ -139,7 +154,10 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media == null)
+            {
+                logger.Log(LogType.Error, $"Failed to remove {name}, Because it was not found.");
                 return false;
+            }
 
             if (media.IsActive)
                 activeMedia.Remove(media);
@@ -150,6 +168,7 @@ namespace AnimatedWallpaper
 
             Save();
 
+            logger.Log(LogType.Normal, $"{name} was removed successfully!");
             return true;
         }
 
@@ -158,7 +177,10 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media == null)
+            {
+                logger.Log(LogType.Error, $"Failed to move up {name}, Because it was not found.");
                 return false;
+            }
 
             if(media.IsActive)
             {
@@ -189,7 +211,10 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media == null)
+            {
+                logger.Log(LogType.Error, $"Failed to move down {name}, Because it was not found.");
                 return false;
+            }
 
             if (media.IsActive)
             {
@@ -220,7 +245,10 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media == null)
+            {
+                logger.Log(LogType.Error, $"Failed to move {name} to the start, Because it was not found.");
                 return false;
+            }
 
             if (media.IsActive)
             {
@@ -241,7 +269,10 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media == null)
+            {
+                logger.Log(LogType.Error, $"Failed to move {name} to the end, Because it was not found.");
                 return false;
+            }
 
             if (media.IsActive)
             {
@@ -262,13 +293,17 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (media.IsActive)
+            {
+                logger.Log(LogType.Error, $"Failed to activate {name} to the start, Because it's already active.");
                 return false;
+            }
 
             media.IsActive = true;
 
             activeMedia.Add(media);
             inactiveMedia.Remove(media);
 
+            logger.Log(LogType.Normal, $"{name} was activated!");
             return true;
         }
 
@@ -277,13 +312,17 @@ namespace AnimatedWallpaper
             var media = Get(name);
 
             if (!media.IsActive)
+            {
+                logger.Log(LogType.Error, $"Failed to deactivate {name} to the start, Because it's already inactive.");
                 return false;
+            }
 
             media.IsActive = false;
 
             inactiveMedia.Add(media);
             activeMedia.Remove(media);
 
+            logger.Log(LogType.Normal, $"{name} was deactivated!");
             return true;
         }
 

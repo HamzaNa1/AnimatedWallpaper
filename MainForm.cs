@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using LibVLCSharp.Shared;
-using System.IO;
 using System.Threading;
 
 namespace AnimatedWallpaper
@@ -29,7 +28,7 @@ namespace AnimatedWallpaper
             menu.Items.Add("Settings", null, MenuSettings_Click);
             menu.Items.Add("Exit", null, (_, _) =>
             {
-                Dispose();
+                DisposeAll();
                 Application.Exit();
             });
 
@@ -57,14 +56,34 @@ namespace AnimatedWallpaper
             OpenSettings();
         }
 
+        private void Tick(object sender, EventArgs e)
+        {
+            CheckFullscreen();
+        }
+
+        void MenuSettings_Click(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
+
         private void PlayNext()
         {
             mediaPlayer.Play(MediaHandler.GetNextMedia());
         }
 
-        private void Tick(object sender, EventArgs e)
+        public void Restart()
         {
-            CheckFullscreen();
+            mediaPlayer.Play(MediaHandler.GetCurrentMedia());
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DisposeAll();
         }
 
         private void CheckFullscreen()
@@ -93,21 +112,6 @@ namespace AnimatedWallpaper
             }
         }
 
-        public void Restart()
-        {
-            mediaPlayer.Play(MediaHandler.GetCurrentMedia());
-        }
-
-        void MenuSettings_Click(object sender, EventArgs e)
-        {
-            OpenSettings();
-        }
-
-        private void notifyIcon_DoubleClick(object sender, EventArgs e)
-        {
-            OpenSettings();
-        }
-
         private void OpenSettings()
         {
             if (settings is not null && !settings.IsDisposed)
@@ -117,9 +121,10 @@ namespace AnimatedWallpaper
             settings.Show();
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void DisposeAll()
         {
             Dispose();
+            Logger.Instance.Dispose();
         }
     }
 }

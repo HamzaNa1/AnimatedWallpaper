@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AnimatedWallpaper
@@ -12,7 +9,8 @@ namespace AnimatedWallpaper
     class ScreenUtilities
     {
         public static readonly string[] IgnoreList = new string[] {
-            "explorer"
+            "explorer",
+            "discord", // Discord has a bug where it still counts as full screen when you close it down to the icon tray
         };
 
 
@@ -52,6 +50,8 @@ namespace AnimatedWallpaper
 
             GetWindowThreadProcessId(hWnd, out uint procId);
             var proc = System.Diagnostics.Process.GetProcessById((int)procId);
+
+            System.Diagnostics.Debug.WriteLine(proc.ProcessName);
 
             if (IgnoreList.Contains(proc.ProcessName))
                 return false;
