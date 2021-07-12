@@ -83,7 +83,7 @@ namespace AnimatedWallpaper
                     continue;
                 }
 
-                    StreamReader reader = new(VideosDirectory + name + ".mp4");
+                StreamReader reader = new(VideosDirectory + name + ".mp4");
                 MyMedia media = new(libVLC, new StreamMediaInput(reader.BaseStream))
                 {
                     Name = name,

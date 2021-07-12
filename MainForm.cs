@@ -125,6 +125,7 @@ namespace AnimatedWallpaper
         {
             Dispose();
             Logger.Instance.Dispose();
+            WallpaperHandler.SetWallpaperToDefault();
         }
     }
 }
