@@ -8,15 +8,11 @@ namespace AnimatedWallpaper
     {
         private readonly RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        private readonly MainForm main;
-
         private readonly bool initStartupState;
 
-        public SettingsForm(MainForm main)
+        public SettingsForm()
         {
             InitializeComponent();
-
-            this.main = main;
 
             LoadData();
 
@@ -66,7 +62,7 @@ namespace AnimatedWallpaper
         {
             MediaHandler.Save();
 
-            main.Restart();
+            WallpaperHandler.Restart();
 
             if (startup_chk.Checked != initStartupState)
             {

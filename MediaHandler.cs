@@ -345,5 +345,10 @@ namespace AnimatedWallpaper
 
             return activeMedia[CurrentIndex];
         }
+
+        public static void Dispose()
+        {
+            libVLC.Dispose();
+        }
     }
 }

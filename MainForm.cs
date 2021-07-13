@@ -11,9 +11,8 @@ namespace AnimatedWallpaper
         {
             InitializeComponent();
             MediaHandler.Initialize();
+            WallpaperHandler.Initialize();
         }
-
-        private MediaPlayer mediaPlayer;
 
         private SettingsForm settings;
 
@@ -42,26 +41,19 @@ namespace AnimatedWallpaper
             timer.Tick += Tick;
             timer.Start();
 
-            mediaPlayer = new MediaPlayer(MediaHandler.libVLC);
+            video.MediaPlayer = WallpaperHandler.MediaPlayer;
 
-            mediaPlayer.EndReached += (_, _) => ThreadPool.QueueUserWorkItem((_) =>
-            {
-                PlayNext();
-            });
-
-            video.MediaPlayer = mediaPlayer;
-
-            Restart();
+            WallpaperHandler.Restart();
 
             OpenSettings();
         }
 
         private void Tick(object sender, EventArgs e)
         {
-            CheckFullscreen();
+            WallpaperHandler.CheckFullscreen();
         }
 
-        void MenuSettings_Click(object sender, EventArgs e)
+        private void MenuSettings_Click(object sender, EventArgs e)
         {
             OpenSettings();
         }
@@ -71,61 +63,28 @@ namespace AnimatedWallpaper
             OpenSettings();
         }
 
-        private void PlayNext()
-        {
-            mediaPlayer.Play(MediaHandler.GetNextMedia());
-        }
-
-        public void Restart()
-        {
-            mediaPlayer.Play(MediaHandler.GetCurrentMedia());
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             DisposeAll();
         }
 
-        private void CheckFullscreen()
-        {
-            try
-            {
-                if (mediaPlayer is null)
-                    return;
-
-                bool fullscreen = ScreenUtilities.IsForegroundFullScreen();
-
-                if (fullscreen && mediaPlayer.IsPlaying)
-                {
-                    mediaPlayer.Pause();
-                    System.Diagnostics.Debug.WriteLine("Paused!");
-                }
-                else if (!fullscreen && !mediaPlayer.IsPlaying)
-                {
-                    mediaPlayer.Play();
-                    System.Diagnostics.Debug.WriteLine("Resumed!");
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e);
-            }
-        }
 
         private void OpenSettings()
         {
             if (settings is not null && !settings.IsDisposed)
                 return;
 
-            settings = new(this);
+            settings = new();
             settings.Show();
         }
 
         private void DisposeAll()
         {
-            Dispose();
-            Logger.Instance.Dispose();
+            MediaHandler.Dispose();
+            WallpaperHandler.Dispose();
             WallpaperHandler.SetWallpaperToDefault();
+            Logger.Instance.Dispose();
+            Dispose();
         }
     }
 }
