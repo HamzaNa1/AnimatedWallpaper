@@ -105,9 +105,7 @@ namespace AnimatedWallpaper
             MediaHandler.MoveDown(name);
 
             LoadData();
-
         }
-
 
         private void activateBtn_Click(object sender, EventArgs e)
         {
@@ -146,9 +144,9 @@ namespace AnimatedWallpaper
         private void removeBtn_Click(object sender, EventArgs e)
         {
             var selected = activateLst.SelectedIndex;
-            var name = "";
+            string name;
 
-            if(selected != -1)
+            if (selected != -1)
             {
                 name = activateLst.Items[selected].ToString();
             }

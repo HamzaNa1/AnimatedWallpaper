@@ -40,6 +40,10 @@
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
           "dependencies": {
+            "ClrHeapAllocationAnalyzer": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
             "LibVLCSharp": {
               "target": "Package",
               "version": "[3.5.1, )"
@@ -47,6 +51,24 @@
             "LibVLCSharp.WinForms": {
               "target": "Package",
               "version": "[3.5.1, )"
+            },
+            "Roslynator.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "Roslynator.CodeAnalysis.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Roslynator.Formatting.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.1, )"
             },
             "VideoLAN.LibVLC.Windows": {
               "target": "Package",

@@ -12,23 +12,20 @@ namespace AnimatedWallpaper
 {
     public static class WallpaperHandler
     {
-        const int SPI_SETDESKWALLPAPER = 20;
-        const int SPIF_UPDATEINIFILE = 0x01;
-        const int SPIF_SENDWININICHANGE = 0x02;
+        private const int SPI_SETDESKWALLPAPER = 20;
+        private const int SPIF_UPDATEINIFILE = 0x01;
+        private const int SPIF_SENDWININICHANGE = 0x02;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
         public static MediaPlayer MediaPlayer { get; private set; }
 
         public static void Initialize()
         {
-            MediaPlayer = new MediaPlayer(MediaHandler.libVLC);
+            MediaPlayer = new MediaPlayer(MediaHandler.LibVLC);
 
-            MediaPlayer.EndReached += (_, _) => ThreadPool.QueueUserWorkItem((_) =>
-            {
-                PlayNext();
-            });
+            MediaPlayer.EndReached += (_, _) => ThreadPool.QueueUserWorkItem((_) => PlayNext());
         }
 
         public static void SetWallpaperToDefault()

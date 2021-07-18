@@ -1,5 +1,6 @@
 ﻿using LibVLCSharp.Shared;
 using System;
+using System.Collections.Generic;
 
 namespace AnimatedWallpaper
 {
@@ -28,24 +29,30 @@ namespace AnimatedWallpaper
         {
         }
 
-        public override bool Equals(object obj)
+        #nullable enable
+
+        public static MyMedia? GetFirstByName(List<MyMedia> list, string name)
         {
-            return base.Equals(obj);
+            foreach (MyMedia media in list)
+            {
+                if (media.Name == name)
+                    return media;
+            }
+
+            return null;
         }
 
-        public override int GetHashCode()
+        public static bool AnyByName(List<MyMedia> list, string name)
         {
-            return base.GetHashCode();
+            foreach(MyMedia media in list)
+            {
+                if (media.Name == name)
+                    return true;
+            }
+
+            return false;
         }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
+        #nullable disable
     }
 }

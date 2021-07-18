@@ -7,7 +7,8 @@ namespace AnimatedWallpaper
     // Credits to Gerald Degeneve
     // https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
 
-    public class W32
+#pragma warning disable
+    public static class Win32Wrapper
     {
         public const int SM_CXSCREEN = 0;
 

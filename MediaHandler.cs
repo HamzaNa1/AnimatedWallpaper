@@ -6,10 +6,8 @@ using System.Windows.Forms;
 
 namespace AnimatedWallpaper
 {
-
     public static class MediaHandler
     {
-        public static LibVLC libVLC;
         private static string DataPath => Application.StartupPath + "Data.cfg";
         private static string VideosDirectory => Application.StartupPath + "Videos/";
 
@@ -17,14 +15,15 @@ namespace AnimatedWallpaper
         public static readonly List<MyMedia> inactiveMedia = new();
 
         public static int CurrentIndex { get; set; }
+        public static LibVLC LibVLC { get; set; }
 
-        private static Logger logger = Logger.Instance;
+        private static readonly Logger logger = Logger.Instance;
 
         public static void Initialize()
         {
             Core.Initialize();
             //libVLC = new("--no-audio", "--input-repeat=65545");
-            libVLC = new("--no-audio");
+            LibVLC = new("--no-audio");
 
             Load();
         }
@@ -84,7 +83,7 @@ namespace AnimatedWallpaper
                 }
 
                 StreamReader reader = new(VideosDirectory + name + ".mp4");
-                MyMedia media = new(libVLC, new StreamMediaInput(reader.BaseStream))
+                MyMedia media = new(LibVLC, new StreamMediaInput(reader.BaseStream))
                 {
                     Name = name,
                     IsActive = isActive
@@ -96,23 +95,18 @@ namespace AnimatedWallpaper
                     inactiveMedia.Add(media);
             }
 
-            logger.Log(LogType.Normal, $"Loaded!");
+            logger.Log(LogType.Normal, "Loaded!");
             return true;
         }
 
         public static MyMedia Get(string name)
         {
-            var media = activeMedia.FirstOrDefault(x => x.Name == name);
-            
-            if(media == null)
-                media = inactiveMedia.FirstOrDefault(x => x.Name == name);
-
-            return media;
+            return MyMedia.GetFirstByName(activeMedia, name) ?? MyMedia.GetFirstByName(inactiveMedia, name);
         }
 
         public static bool Exists(string name)
         {
-            return activeMedia.Any(x => x.Name == name) && inactiveMedia.Any(x => x.Name == name);
+            return MyMedia.AnyByName(activeMedia, name) || MyMedia.AnyByName(inactiveMedia, name);
         }
 
         public static bool Add(string url, string name)
@@ -135,7 +129,7 @@ namespace AnimatedWallpaper
             File.Copy(url, VideosDirectory + name + ".mp4", true);
 
             StreamReader reader = new(VideosDirectory + name + ".mp4");
-            MyMedia media = new(libVLC, new StreamMediaInput(reader.BaseStream))
+            MyMedia media = new(LibVLC, new StreamMediaInput(reader.BaseStream))
             {
                 Name = name,
                 IsActive = false
@@ -348,7 +342,7 @@ namespace AnimatedWallpaper
 
         public static void Dispose()
         {
-            libVLC.Dispose();
+            LibVLC.Dispose();
         }
     }
 }

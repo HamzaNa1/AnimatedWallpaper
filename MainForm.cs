@@ -24,7 +24,7 @@ namespace AnimatedWallpaper
             video.Size = Size;
 
             var menu = new ContextMenuStrip();
-            menu.Items.Add("Settings", null, MenuSettings_Click);
+            menu.Items.Add("Settings", null, OpenSettings);
             menu.Items.Add("Exit", null, (_, _) =>
             {
                 DisposeAll();
@@ -68,10 +68,14 @@ namespace AnimatedWallpaper
             DisposeAll();
         }
 
+        private void OpenSettings(object sender, EventArgs e)
+        {
+            OpenSettings();
+        }
 
         private void OpenSettings()
         {
-            if (settings is not null && !settings.IsDisposed)
+            if (settings?.IsDisposed == false)
                 return;
 
             settings = new();

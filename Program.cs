@@ -6,31 +6,31 @@ namespace AnimatedWallpaper
     // Credits to Gerald Degeneve
     // https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
 
-    static class Program
+    internal static class Program
     {
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Fetch the Progman window
-            IntPtr progman = W32.FindWindow("Progman", null);
+            IntPtr progman = Win32Wrapper.FindWindow("Progman", null);
 
             IntPtr result = IntPtr.Zero;
 
             // Send 0x052C to Progman. This message directs Progman to spawn a 
             // WorkerW behind the desktop icons. If it is already there, nothing 
             // happens.
-            W32.SendMessageTimeout(progman,
+            Win32Wrapper.SendMessageTimeout(progman,
                                    0x052C,
                                    new IntPtr(0),
                                    IntPtr.Zero,
-                                   W32.SendMessageTimeoutFlags.SMTO_NORMAL,
+                                   Win32Wrapper.SendMessageTimeoutFlags.SMTO_NORMAL,
                                    1000,
                                    out result);
 
@@ -48,9 +48,9 @@ namespace AnimatedWallpaper
             // We enumerate all Windows, until we find one, that has the SHELLDLL_DefView 
             // as a child. 
             // If we found that window, we take its next sibling and assign it to workerw.
-            W32.EnumWindows(new W32.EnumWindowsProc((tophandle, topparamhandle) =>
+            Win32Wrapper.EnumWindows(new Win32Wrapper.EnumWindowsProc((tophandle, _) =>
             {
-                IntPtr p = W32.FindWindowEx(tophandle,
+                IntPtr p = Win32Wrapper.FindWindowEx(tophandle,
                                             IntPtr.Zero,
                                             "SHELLDLL_DefView",
                                             IntPtr.Zero);
@@ -58,7 +58,7 @@ namespace AnimatedWallpaper
                 if (p != IntPtr.Zero)
                 {
                     // Gets the WorkerW Window after the current one.
-                    workerw = W32.FindWindowEx(IntPtr.Zero,
+                    workerw = Win32Wrapper.FindWindowEx(IntPtr.Zero,
                                                tophandle,
                                                "WorkerW",
                                                IntPtr.Zero);
@@ -69,7 +69,7 @@ namespace AnimatedWallpaper
 
             var form = new MainForm();
 
-            W32.SetParent(form.Handle, workerw);
+            Win32Wrapper.SetParent(form.Handle, workerw);
 
             Application.Run(form);
         }

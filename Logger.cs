@@ -13,10 +13,7 @@ namespace AnimatedWallpaper
         {
             get
             {
-                if (instance == null)
-                    instance = new Logger();
-
-                return instance;
+                return instance ??= new Logger();
             }
         }
         private static Logger instance;
@@ -45,7 +42,8 @@ namespace AnimatedWallpaper
                 _ => "",
             };
 
-            string data = $"[{DateTime.Now}] {prefix}: {message}";
+            var now = DateTime.Now;
+            string data = $"[{now}] {prefix}: {message}";
 
             Debug.WriteLine(data);
 
