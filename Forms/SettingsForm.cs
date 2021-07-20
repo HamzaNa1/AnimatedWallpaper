@@ -1,8 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using AnimatedWallpaper.Media;
+using AnimatedWallpaper.Wallpaper;
+using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Forms
 {
     public partial class SettingsForm : Form
     {

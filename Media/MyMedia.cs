@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Media
 {
-    public class MyMedia : Media
+    public class MyMedia : LibVLCSharp.Shared.Media
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }

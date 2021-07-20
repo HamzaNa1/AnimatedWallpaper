@@ -1,9 +1,10 @@
-﻿using System;
+﻿using AnimatedWallpaper.Media;
+using AnimatedWallpaper.Wallpaper;
+using System;
 using System.Windows.Forms;
-using LibVLCSharp.Shared;
-using System.Threading;
+using AnimatedWallpaper.Loggers;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Forms
 {
     public partial class MainForm : Form
     {

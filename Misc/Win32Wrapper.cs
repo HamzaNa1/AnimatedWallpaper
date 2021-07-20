@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Misc
 {
     // Credits to Gerald Degeneve
     // https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus

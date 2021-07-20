@@ -1,5 +1,5 @@
 ﻿
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Forms
 {
     partial class MainForm
     {
@@ -38,8 +38,8 @@ namespace AnimatedWallpaper
             // 
             // video
             // 
-            this.video.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.video.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.video.BackColor = System.Drawing.Color.Black;
             this.video.ForeColor = System.Drawing.SystemColors.ControlLightLight;

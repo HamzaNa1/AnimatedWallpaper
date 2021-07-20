@@ -3,15 +3,15 @@
   <PropertyGroup />
   <ItemGroup />
   <ItemGroup>
-    <Compile Update="MainForm.cs">
+    <Compile Update="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="SettingsForm.cs">
+    <Compile Update="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="MainForm.resx">
+    <EmbeddedResource Update="Forms\MainForm.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Screen_
 {
     internal static class ScreenUtilities
     {
@@ -55,8 +54,13 @@ namespace AnimatedWallpaper
 
             System.Diagnostics.Debug.WriteLine(proc.ProcessName);
 
-            if (IgnoreList.Contains(proc.ProcessName))
-                return false;
+            for (int i = 0; i < IgnoreList.Length; i++)
+            {
+                if (proc.ProcessName == IgnoreList[i])
+                {
+                    return false;
+                }
+            }
 
             return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top).Contains(screen.WorkingArea);
         }

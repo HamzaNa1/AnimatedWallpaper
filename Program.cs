@@ -1,3 +1,5 @@
+using AnimatedWallpaper.Forms;
+using AnimatedWallpaper.Misc;
 using System;
 using System.Windows.Forms;
 

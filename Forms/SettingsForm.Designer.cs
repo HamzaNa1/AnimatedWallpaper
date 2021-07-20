@@ -1,5 +1,5 @@
 ﻿
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Forms
 {
     partial class SettingsForm
     {

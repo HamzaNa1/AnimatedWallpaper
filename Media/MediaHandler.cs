@@ -1,10 +1,10 @@
-﻿using LibVLCSharp.Shared;
+﻿using AnimatedWallpaper.Loggers;
+using LibVLCSharp.Shared;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
-namespace AnimatedWallpaper
+namespace AnimatedWallpaper.Media
 {
     public static class MediaHandler
     {
