@@ -16,6 +16,7 @@ namespace AnimatedWallpaper
                 return instance ??= new Logger();
             }
         }
+
         private static Logger instance;
 
         private readonly StreamWriter writer;
@@ -42,7 +43,7 @@ namespace AnimatedWallpaper
                 _ => "",
             };
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.ToString();
             string data = $"[{now}] {prefix}: {message}";
 
             Debug.WriteLine(data);

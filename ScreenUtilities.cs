@@ -10,7 +10,9 @@ namespace AnimatedWallpaper
     {
         public static readonly string[] IgnoreList = new string[] {
             "explorer",
-            "discord", // Discord has a bug where it still counts as full screen when you close it down to the icon tray
+            "AnimatedWallpaper",
+            "Discord", // Discord has a bug where it still counts as full screen when you close it down to the icon tray
+            "StartMenuExperienceHost"
         };
 
         [StructLayout(LayoutKind.Sequential)]
@@ -42,6 +44,7 @@ namespace AnimatedWallpaper
             {
                 screen = Screen.PrimaryScreen;
             }
+
             RECT rect = new();
             IntPtr hWnd = GetForegroundWindow();
 
