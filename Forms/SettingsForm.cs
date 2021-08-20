@@ -8,9 +8,9 @@ namespace AnimatedWallpaper.Forms
 {
     public partial class SettingsForm : Form
     {
-        private readonly RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        private readonly RegistryKey _rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        private readonly bool initStartupState;
+        private readonly bool _initStartupState;
 
         public SettingsForm()
         {
@@ -18,31 +18,31 @@ namespace AnimatedWallpaper.Forms
 
             LoadData();
 
-            if (rkApp.GetValue("AnimatedWallpaper") is null)
+            if (_rkApp.GetValue("AnimatedWallpaper") is null)
             {
                 startup_chk.Checked = false;
-                initStartupState = false;
+                _initStartupState = false;
             }
             else
             {
                 startup_chk.Checked = true;
-                initStartupState = true;
+                _initStartupState = true;
             }
 
             videoFileDialog.Filter = "MP4 Files|*.mp4|WMV Files|*.wmv|WMA Files|*.wma|AVI Files|*.avi";
         }
 
-        public void LoadData()
+        private void LoadData()
         {
             activateLst.Items.Clear();
             deactivateLst.Items.Clear();
 
-            foreach (MyMedia media in MediaHandler.activeMedia)
+            foreach (var media in MediaHandler.ActiveMedia)
             {
                 activateLst.Items.Add(media.Name);
             }
 
-            foreach (MyMedia media in MediaHandler.inactiveMedia)
+            foreach (var media in MediaHandler.InactiveMedia)
             {
                 deactivateLst.Items.Add(media.Name);
             }
@@ -50,14 +50,14 @@ namespace AnimatedWallpaper.Forms
 
         private void addBtn_Click(object sender, EventArgs e)
         {
-            if (videoFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                var url = videoFileDialog.FileName;
-                var name = videoFileDialog.SafeFileName;
+            if (videoFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            
+            var url = videoFileDialog.FileName;
+            var name = videoFileDialog.SafeFileName;
 
-                MediaHandler.Add(url, name);
-                deactivateLst.Items.Add(name);
-            }
+            MediaHandler.Add(url, name);
+            deactivateLst.Items.Add(name ?? string.Empty);
         }
 
         private void saveBtn_Click(object sender, EventArgs e)
@@ -66,15 +66,15 @@ namespace AnimatedWallpaper.Forms
 
             WallpaperHandler.Restart();
 
-            if (startup_chk.Checked != initStartupState)
+            if (startup_chk.Checked != _initStartupState)
             {
                 if (startup_chk.Checked)
                 {
-                    rkApp.SetValue("AnimatedWallpaper", Application.ExecutablePath);
+                    _rkApp.SetValue("AnimatedWallpaper", Application.ExecutablePath);
                 }
                 else
                 {
-                    rkApp.DeleteValue("AnimatedWallpaper", false);
+                    _rkApp.DeleteValue("AnimatedWallpaper", false);
                 }
             }
 

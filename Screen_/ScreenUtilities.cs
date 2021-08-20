@@ -7,7 +7,7 @@ namespace AnimatedWallpaper.Screen_
 {
     internal static class ScreenUtilities
     {
-        public static readonly string[] IgnoreList = new string[] {
+        private static readonly string[] IgnoreList = new string[] {
             "explorer",
             "AnimatedWallpaper",
             "Discord", // Discord has a bug where it still counts as full screen when you close it down to the icon tray
@@ -15,19 +15,19 @@ namespace AnimatedWallpaper.Screen_
         };
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
+        private readonly struct Rect
         {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
+            public readonly int left;
+            public readonly int top;
+            public readonly int right;
+            public readonly int bottom;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(HandleRef hWnd, [In, Out] ref RECT rect);
+        private static extern bool GetWindowRect(HandleRef hWnd, [In, Out] ref Rect rect);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -37,24 +37,21 @@ namespace AnimatedWallpaper.Screen_
             return IsForegroundFullScreen(null);
         }
 
-        public static bool IsForegroundFullScreen(Screen screen)
+        private static bool IsForegroundFullScreen(Screen screen)
         {
-            if (screen == null)
-            {
-                screen = Screen.PrimaryScreen;
-            }
+            screen ??= Screen.PrimaryScreen;
 
-            RECT rect = new();
-            IntPtr hWnd = GetForegroundWindow();
+            Rect rect = new();
+            var hWnd = GetForegroundWindow();
 
             GetWindowRect(new HandleRef(null, hWnd), ref rect);
 
-            _ = GetWindowThreadProcessId(hWnd, out uint procId);
+            _ = GetWindowThreadProcessId(hWnd, out var procId);
             var proc = System.Diagnostics.Process.GetProcessById((int)procId);
 
             System.Diagnostics.Debug.WriteLine(proc.ProcessName);
 
-            for (int i = 0; i < IgnoreList.Length; i++)
+            for (var i = 0; i < IgnoreList.Length; i++)
             {
                 if (proc.ProcessName == IgnoreList[i])
                 {

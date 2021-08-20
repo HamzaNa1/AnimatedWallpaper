@@ -15,7 +15,7 @@ namespace AnimatedWallpaper.Forms
             WallpaperHandler.Initialize();
         }
 
-        private SettingsForm settings;
+        private SettingsForm _settings;
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -34,7 +34,7 @@ namespace AnimatedWallpaper.Forms
 
             notifyIcon.ContextMenuStrip = menu;
 
-            System.Windows.Forms.Timer timer = new()
+            Timer timer = new()
             {
                 Interval = 300,
             };
@@ -54,11 +54,6 @@ namespace AnimatedWallpaper.Forms
             WallpaperHandler.CheckFullscreen();
         }
 
-        private void MenuSettings_Click(object sender, EventArgs e)
-        {
-            OpenSettings();
-        }
-
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
         {
             OpenSettings();
@@ -76,11 +71,11 @@ namespace AnimatedWallpaper.Forms
 
         private void OpenSettings()
         {
-            if (settings?.IsDisposed == false)
+            if (_settings?.IsDisposed == false)
                 return;
 
-            settings = new();
-            settings.Show();
+            _settings = new SettingsForm();
+            _settings.Show();
         }
 
         private void DisposeAll()

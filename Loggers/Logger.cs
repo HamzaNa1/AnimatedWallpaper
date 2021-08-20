@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,27 +8,27 @@ namespace AnimatedWallpaper.Loggers
 {
     public class Logger : IDisposable
     {
-        public readonly string Path = Application.StartupPath + "log.txt";
+        private readonly string _path = Application.StartupPath + "log.txt";
 
         public static Logger Instance
         {
             get
             {
-                return instance ??= new Logger();
+                return _instance ??= new Logger();
             }
         }
 
-        private static Logger instance;
+        private static Logger _instance;
 
-        private readonly StreamWriter writer;
+        private readonly StreamWriter _writer;
 
-        public Logger()
+        private Logger()
         {
-            var stream = File.Create(Path);
+            var stream = File.Create(_path);
             stream.Close();
             stream.Dispose();
 
-            writer = new StreamWriter(Path)
+            _writer = new StreamWriter(_path)
             {
                 AutoFlush = true
             };
@@ -35,7 +36,7 @@ namespace AnimatedWallpaper.Loggers
 
         public void Log(LogType type, string message)
         {
-            string prefix = type switch
+            var prefix = type switch
             {
                 LogType.Normal => "Message",
                 LogType.Warning => "Warning",
@@ -43,18 +44,18 @@ namespace AnimatedWallpaper.Loggers
                 _ => "",
             };
 
-            var now = DateTime.Now.ToString();
-            string data = $"[{now}] {prefix}: {message}";
+            var now = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            var data = $"[{now}] {prefix}: {message}";
 
             Debug.WriteLine(data);
 
-            writer.WriteLineAsync(data);
+            _writer.WriteLineAsync(data);
         }
 
         public void Dispose()
         {
-            writer.Close();
-            writer.Dispose();
+            _writer.Close();
+            _writer.Dispose();
             GC.SuppressFinalize(this);
         }
     }

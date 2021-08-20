@@ -6,26 +6,26 @@ namespace AnimatedWallpaper.Media
 {
     public class MyMedia : LibVLCSharp.Shared.Media
     {
-        public string Name { get; set; }
+        public string Name { get; init; }
         public bool IsActive { get; set; }
 
         public MyMedia(MediaList mediaList) : base(mediaList)
         {
         }
 
-        public MyMedia(LibVLC libVLC, Uri uri, params string[] options) : base(libVLC, uri, options)
+        public MyMedia(LibVLC libVlc, Uri uri, params string[] options) : base(libVlc, uri, options)
         {
         }
 
-        public MyMedia(LibVLC libVLC, int fd, params string[] options) : base(libVLC, fd, options)
+        public MyMedia(LibVLC libVlc, int fd, params string[] options) : base(libVlc, fd, options)
         {
         }
 
-        public MyMedia(LibVLC libVLC, MediaInput input, params string[] options) : base(libVLC, input, options)
+        public MyMedia(LibVLC libVlc, MediaInput input, params string[] options) : base(libVlc, input, options)
         {
         }
 
-        public MyMedia(LibVLC libVLC, string mrl, FromType type = FromType.FromPath, params string[] options) : base(libVLC, mrl, type, options)
+        public MyMedia(LibVLC libVlc, string mrl, FromType type = FromType.FromPath, params string[] options) : base(libVlc, mrl, type, options)
         {
         }
 

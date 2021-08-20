@@ -2,6 +2,7 @@
 using LibVLCSharp.Shared;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AnimatedWallpaper.Media
@@ -11,36 +12,27 @@ namespace AnimatedWallpaper.Media
         private static string DataPath => Application.StartupPath + "Data.cfg";
         private static string VideosDirectory => Application.StartupPath + "Videos/";
 
-        public static readonly List<MyMedia> activeMedia = new();
-        public static readonly List<MyMedia> inactiveMedia = new();
+        public static readonly List<MyMedia> ActiveMedia = new();
+        public static readonly List<MyMedia> InactiveMedia = new();
 
-        public static int CurrentIndex { get; set; }
-        public static LibVLC LibVLC { get; set; }
+        private static int CurrentIndex { get; set; }
+        public static LibVLC LibVlc { get; private set; }
 
-        private static readonly Logger logger = Logger.Instance;
+        private static readonly Logger Logger = Logger.Instance;
 
         public static void Initialize()
         {
             Core.Initialize();
             //libVLC = new("--no-audio", "--input-repeat=65545");
-            LibVLC = new("--no-audio");
+            LibVlc = new LibVLC("--no-audio");
 
             Load();
         }
 
         public static bool Save()
         {
-            List<string> data = new();
-
-            foreach (MyMedia media in activeMedia)
-            {
-                data.Add($"{media.Name}:active");
-            }
-
-            foreach (MyMedia media in inactiveMedia)
-            {
-                data.Add($"{media.Name}:inactive");
-            }
+            var data = ActiveMedia.Select(media => $"{media.Name}:active").ToList();
+            data.AddRange(InactiveMedia.Select(media => $"{media.Name}:inactive"));
 
             try
             {
@@ -51,25 +43,25 @@ namespace AnimatedWallpaper.Media
             }
             catch (IOException e)
             {
-                logger.Log(LogType.Error, e.ToString());
+                Logger.Log(LogType.Error, e.ToString());
                 return false;
             }
 
-            logger.Log(LogType.Normal, "Saved!");
+            Logger.Log(LogType.Normal, "Saved!");
             return true;
         }
 
-        public static bool Load()
+        private static bool Load()
         {
             if (!File.Exists(DataPath))
             {
-                logger.Log(LogType.Error, $"Failed to load ({DataPath} does not exist)");
+                Logger.Log(LogType.Error, $"Failed to load ({DataPath} does not exist)");
                 return false;
             }
 
-            string[] data = File.ReadAllLines(DataPath);
+            var data = File.ReadAllLines(DataPath);
 
-            foreach (string s in data)
+            foreach (var s in data)
             {
                 var split = s.Split(':');
 
@@ -78,35 +70,35 @@ namespace AnimatedWallpaper.Media
 
                 if (!File.Exists(VideosDirectory + name + ".mp4"))
                 {
-                    logger.Log(LogType.Warning, $"Could not find {name}, Skipping to the next media");
+                    Logger.Log(LogType.Warning, $"Could not find {name}, Skipping to the next media");
                     continue;
                 }
 
                 StreamReader reader = new(VideosDirectory + name + ".mp4");
-                MyMedia media = new(LibVLC, new StreamMediaInput(reader.BaseStream))
+                MyMedia media = new(LibVlc, new StreamMediaInput(reader.BaseStream))
                 {
                     Name = name,
                     IsActive = isActive
                 };
 
                 if (media.IsActive)
-                    activeMedia.Add(media);
+                    ActiveMedia.Add(media);
                 else
-                    inactiveMedia.Add(media);
+                    InactiveMedia.Add(media);
             }
 
-            logger.Log(LogType.Normal, "Loaded!");
+            Logger.Log(LogType.Normal, "Loaded!");
             return true;
         }
 
         public static MyMedia Get(string name)
         {
-            return MyMedia.GetFirstByName(activeMedia, name) ?? MyMedia.GetFirstByName(inactiveMedia, name);
+            return MyMedia.GetFirstByName(ActiveMedia, name) ?? MyMedia.GetFirstByName(InactiveMedia, name);
         }
 
-        public static bool Exists(string name)
+        private static bool Exists(string name)
         {
-            return MyMedia.AnyByName(activeMedia, name) || MyMedia.AnyByName(inactiveMedia, name);
+            return MyMedia.AnyByName(ActiveMedia, name) || MyMedia.AnyByName(InactiveMedia, name);
         }
 
         public static bool Add(string url, string name)
@@ -129,17 +121,17 @@ namespace AnimatedWallpaper.Media
             File.Copy(url, VideosDirectory + name + ".mp4", true);
 
             StreamReader reader = new(VideosDirectory + name + ".mp4");
-            MyMedia media = new(LibVLC, new StreamMediaInput(reader.BaseStream))
+            MyMedia media = new(LibVlc, new StreamMediaInput(reader.BaseStream))
             {
                 Name = name,
                 IsActive = false
             };
 
-            inactiveMedia.Add(media);
+            InactiveMedia.Add(media);
 
             Save();
 
-            logger.Log(LogType.Normal, $"Added media ({name}) successfully!");
+            Logger.Log(LogType.Normal, $"Added media ({name}) successfully!");
             return true;
         }
 
@@ -149,20 +141,20 @@ namespace AnimatedWallpaper.Media
 
             if (media == null)
             {
-                logger.Log(LogType.Error, $"Failed to remove {name}, Because it was not found.");
+                Logger.Log(LogType.Error, $"Failed to remove {name}, Because it was not found.");
                 return false;
             }
 
             if (media.IsActive)
-                activeMedia.Remove(media);
+                ActiveMedia.Remove(media);
             else
-                inactiveMedia.Remove(media);
+                InactiveMedia.Remove(media);
 
             media.Dispose();
 
             Save();
 
-            logger.Log(LogType.Normal, $"{name} was removed successfully!");
+            Logger.Log(LogType.Normal, $"{name} was removed successfully!");
             return true;
         }
 
@@ -172,29 +164,29 @@ namespace AnimatedWallpaper.Media
 
             if (media == null)
             {
-                logger.Log(LogType.Error, $"Failed to move up {name}, Because it was not found.");
+                Logger.Log(LogType.Error, $"Failed to move up {name}, Because it was not found.");
                 return false;
             }
 
             if(media.IsActive)
             {
-                var index = activeMedia.IndexOf(media);
+                var index = ActiveMedia.IndexOf(media);
 
-                var x = activeMedia[index];
-                var y = activeMedia[index - 1];
+                var x = ActiveMedia[index];
+                var y = ActiveMedia[index - 1];
 
-                activeMedia[index - 1] = x;
-                activeMedia[index] = y;
+                ActiveMedia[index - 1] = x;
+                ActiveMedia[index] = y;
             }
             else
             {
-                var index = inactiveMedia.IndexOf(media);
+                var index = InactiveMedia.IndexOf(media);
 
-                var x = inactiveMedia[index];
-                var y = inactiveMedia[index - 1];
+                var x = InactiveMedia[index];
+                var y = InactiveMedia[index - 1];
 
-                inactiveMedia[index - 1] = x;
-                inactiveMedia[index] = y;
+                InactiveMedia[index - 1] = x;
+                InactiveMedia[index] = y;
             }
 
             return true;
@@ -206,29 +198,29 @@ namespace AnimatedWallpaper.Media
 
             if (media == null)
             {
-                logger.Log(LogType.Error, $"Failed to move down {name}, Because it was not found.");
+                Logger.Log(LogType.Error, $"Failed to move down {name}, Because it was not found.");
                 return false;
             }
 
             if (media.IsActive)
             {
-                var index = activeMedia.IndexOf(media);
+                var index = ActiveMedia.IndexOf(media);
 
-                var x = activeMedia[index];
-                var y = activeMedia[index + 1];
+                var x = ActiveMedia[index];
+                var y = ActiveMedia[index + 1];
 
-                activeMedia[index + 1] = x;
-                activeMedia[index] = y;
+                ActiveMedia[index + 1] = x;
+                ActiveMedia[index] = y;
             }
             else
             {
-                var index = inactiveMedia.IndexOf(media);
+                var index = InactiveMedia.IndexOf(media);
 
-                var x = inactiveMedia[index];
-                var y = inactiveMedia[index + 1];
+                var x = InactiveMedia[index];
+                var y = InactiveMedia[index + 1];
 
-                inactiveMedia[index + 1] = x;
-                inactiveMedia[index] = y;
+                InactiveMedia[index + 1] = x;
+                InactiveMedia[index] = y;
             }
 
             return true;
@@ -240,19 +232,19 @@ namespace AnimatedWallpaper.Media
 
             if (media == null)
             {
-                logger.Log(LogType.Error, $"Failed to move {name} to the start, Because it was not found.");
+                Logger.Log(LogType.Error, $"Failed to move {name} to the start, Because it was not found.");
                 return false;
             }
 
             if (media.IsActive)
             {
-                activeMedia.Remove(media);
-                activeMedia.Insert(0, media);
+                ActiveMedia.Remove(media);
+                ActiveMedia.Insert(0, media);
             }
             else
             {
-                inactiveMedia.Remove(media);
-                inactiveMedia.Insert(0, media);
+                InactiveMedia.Remove(media);
+                InactiveMedia.Insert(0, media);
             }
 
             return true;
@@ -264,19 +256,19 @@ namespace AnimatedWallpaper.Media
 
             if (media == null)
             {
-                logger.Log(LogType.Error, $"Failed to move {name} to the end, Because it was not found.");
+                Logger.Log(LogType.Error, $"Failed to move {name} to the end, Because it was not found.");
                 return false;
             }
 
             if (media.IsActive)
             {
-                activeMedia.Remove(media);
-                activeMedia.Insert(activeMedia.Count, media);
+                ActiveMedia.Remove(media);
+                ActiveMedia.Insert(ActiveMedia.Count, media);
             }
             else
             {
-                inactiveMedia.Remove(media);
-                inactiveMedia.Insert(inactiveMedia.Count, media);
+                InactiveMedia.Remove(media);
+                InactiveMedia.Insert(InactiveMedia.Count, media);
             }
 
             return true;
@@ -288,16 +280,16 @@ namespace AnimatedWallpaper.Media
 
             if (media.IsActive)
             {
-                logger.Log(LogType.Error, $"Failed to activate {name} to the start, Because it's already active.");
+                Logger.Log(LogType.Error, $"Failed to activate {name} to the start, Because it's already active.");
                 return false;
             }
 
             media.IsActive = true;
 
-            activeMedia.Add(media);
-            inactiveMedia.Remove(media);
+            ActiveMedia.Add(media);
+            InactiveMedia.Remove(media);
 
-            logger.Log(LogType.Normal, $"{name} was activated!");
+            Logger.Log(LogType.Normal, $"{name} was activated!");
             return true;
         }
 
@@ -307,42 +299,42 @@ namespace AnimatedWallpaper.Media
 
             if (!media.IsActive)
             {
-                logger.Log(LogType.Error, $"Failed to deactivate {name} to the start, Because it's already inactive.");
+                Logger.Log(LogType.Error, $"Failed to deactivate {name} to the start, Because it's already inactive.");
                 return false;
             }
 
             media.IsActive = false;
 
-            inactiveMedia.Add(media);
-            activeMedia.Remove(media);
+            InactiveMedia.Add(media);
+            ActiveMedia.Remove(media);
 
-            logger.Log(LogType.Normal, $"{name} was deactivated!");
+            Logger.Log(LogType.Normal, $"{name} was deactivated!");
             return true;
         }
 
         public static MyMedia GetCurrentMedia()
         {
-            if (activeMedia.Count == 0)
+            if (ActiveMedia.Count == 0)
                 return null;
 
-            return activeMedia[CurrentIndex];
+            return ActiveMedia[CurrentIndex];
         }
 
         public static MyMedia GetNextMedia()
         {
-            if (activeMedia.Count == 0)
+            if (ActiveMedia.Count == 0)
                 return null;
 
             CurrentIndex++;
-            if (CurrentIndex >= activeMedia.Count)
+            if (CurrentIndex >= ActiveMedia.Count)
                 CurrentIndex = 0;
 
-            return activeMedia[CurrentIndex];
+            return ActiveMedia[CurrentIndex];
         }
 
         public static void Dispose()
         {
-            LibVLC.Dispose();
+            LibVlc.Dispose();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AnimatedWallpaper.Wallpaper
 
         public static void Initialize()
         {
-            MediaPlayer = new MediaPlayer(MediaHandler.LibVLC);
+            MediaPlayer = new MediaPlayer(MediaHandler.LibVlc);
 
             MediaPlayer.EndReached += (_, _) => ThreadPool.QueueUserWorkItem((_) => PlayNext());
         }
@@ -42,17 +42,18 @@ namespace AnimatedWallpaper.Wallpaper
                 if (MediaPlayer is null)
                     return;
 
-                bool fullscreen = ScreenUtilities.IsForegroundFullScreen();
+                var fullscreen = ScreenUtilities.IsForegroundFullScreen();
 
-                if (fullscreen && MediaPlayer.IsPlaying)
+                switch (fullscreen)
                 {
-                    MediaPlayer.Pause();
-                    System.Diagnostics.Debug.WriteLine("Paused!");
-                }
-                else if (!fullscreen && !MediaPlayer.IsPlaying)
-                {
-                    MediaPlayer.Play();
-                    System.Diagnostics.Debug.WriteLine("Resumed!");
+                    case true when MediaPlayer.IsPlaying:
+                        MediaPlayer.Pause();
+                        System.Diagnostics.Debug.WriteLine("Paused!");
+                        break;
+                    case false when !MediaPlayer.IsPlaying:
+                        MediaPlayer.Play();
+                        System.Diagnostics.Debug.WriteLine("Resumed!");
+                        break;
                 }
             }
             catch (Exception e)
@@ -61,7 +62,7 @@ namespace AnimatedWallpaper.Wallpaper
             }
         }
 
-        public static void PlayNext()
+        private static void PlayNext()
         {
             MediaPlayer.Play(MediaHandler.GetNextMedia());
         }
