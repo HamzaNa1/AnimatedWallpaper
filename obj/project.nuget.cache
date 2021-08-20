@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EZT8A6fcs8KNjCWkBfz3jULuzdsvb7cCGkE0bo40iUf6FLHpQtz6CkanABjJD8TM+SwkXHd2s/Be25/9xT9rig==",
+  "dgSpecHash": "YC9HJuX2jR5WUEPK/YSQb7e1blTdcTd41qYbp773meBLat+ltiqMd8aIC8Mpy7GS5DgqYuZpaA+wUPW6RTXz9Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\hamza\\source\\repos\\AnimatedWallpaper\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
+  "projectFilePath": "C:\\Users\\hamza\\Documents\\GitHub\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hamza\\.nuget\\packages\\clrheapallocationanalyzer\\3.0.0\\clrheapallocationanalyzer.3.0.0.nupkg.sha512",
     "C:\\Users\\hamza\\.nuget\\packages\\libvlcsharp\\3.5.1\\libvlcsharp.3.5.1.nupkg.sha512",

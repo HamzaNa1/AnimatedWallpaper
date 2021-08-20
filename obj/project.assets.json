@@ -4294,21 +4294,19 @@
   "project": {
     "version": "0.1.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hamza\\source\\repos\\AnimatedWallpaper\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
+      "projectUniqueName": "C:\\Users\\hamza\\Documents\\GitHub\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
       "projectName": "AnimatedWallpaper",
-      "projectPath": "C:\\Users\\hamza\\source\\repos\\AnimatedWallpaper\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
+      "projectPath": "C:\\Users\\hamza\\Documents\\GitHub\\AnimatedWallpaper\\AnimatedWallpaper.csproj",
       "packagesPath": "C:\\Users\\hamza\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hamza\\source\\repos\\AnimatedWallpaper\\AnimatedWallpaper\\obj\\",
+      "outputPath": "C:\\Users\\hamza\\Documents\\GitHub\\AnimatedWallpaper\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\hamza\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\hamza\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net5.0-windows7.0"
+        "net5.0-windows"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4380,7 +4378,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\hamza\\.dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }
